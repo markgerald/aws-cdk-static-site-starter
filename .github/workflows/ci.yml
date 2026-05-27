@@ -2,9 +2,21 @@ name: CI
 
 on:
   pull_request:
+    paths:
+      - 'bin/**'
+      - 'lib/**'
+      - 'test/**'
+      - 'website_src/**'
+      - '!**/*.md'
   push:
     branches:
       - main
+    paths:
+      - 'bin/**'
+      - 'lib/**'
+      - 'test/**'
+      - 'website_src/**'
+      - '!**/*.md'
 
 jobs:
   validate:
