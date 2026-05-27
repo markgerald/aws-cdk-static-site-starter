@@ -49,7 +49,7 @@ describe('website build pipeline', () => {
     expect(readme).toContain('cp .env.example .env');
     expect(readme).toContain('[Portuguese version](docs/README.pt-BR.md)');
     expect(readme).toContain(
-      '[![CI](https://github.com/mgm-tech/aws-cdk-static-site-starter/actions/workflows/ci.yml/badge.svg)]',
+      '[![CI](https://github.com/markgerald/aws-cdk-static-site-starter/actions/workflows/ci.yml/badge.svg)]',
     );
     expect(readme).toContain(
       'Reusable AWS CDK starter for a static website with private S3, CloudFront OAC, ACM, Cloudflare DNS, and GitHub Actions deploys.',
