@@ -1,6 +1,6 @@
 # AWS CDK Static Site Starter
 
-[![CI](https://github.com/mgm-tech/aws-cdk-static-site-starter/actions/workflows/ci.yml/badge.svg)](https://github.com/mgm-tech/aws-cdk-static-site-starter/actions/workflows/ci.yml)
+[![CI](https://github.com/markgerald/aws-cdk-static-site-starter/actions/workflows/ci.yml/badge.svg)](https://github.com/markgerald/aws-cdk-static-site-starter/actions/workflows/ci.yml)
 
 [English version](../README.md)
 
