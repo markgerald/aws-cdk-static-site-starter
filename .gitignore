@@ -1,0 +1,13 @@
+node_modules/
+cdk.out/
+coverage/
+website_dist/
+dist/
+*.js
+*.d.ts
+!.github/
+npm-debug.log*
+.DS_Store
+.env
+.idea/
+.vscode/

@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Static Site on AWS">
+  <rect width="64" height="64" rx="12" fill="#164739" />
+  <path d="M16 40h32M20 32h24M24 24h16" fill="none" stroke="#fffdf8" stroke-width="5" stroke-linecap="round" />
+  <circle cx="48" cy="18" r="6" fill="#bb5a34" />
+</svg>

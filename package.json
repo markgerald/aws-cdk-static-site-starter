@@ -1,0 +1,44 @@
+{
+  "name": "aws-cdk-static-site-starter",
+  "version": "1.0.0",
+  "description": "Reusable AWS CDK starter for a static website with private S3, CloudFront OAC, ACM, Cloudflare DNS, and GitHub Actions deploys.",
+  "private": true,
+  "license": "MIT",
+  "scripts": {
+    "build": "tsc",
+    "build:site": "vite build --config website_src/vite.config.ts",
+    "build:all": "npm run build && npm run build:site",
+    "test": "jest",
+    "test:coverage": "jest --coverage",
+    "watch": "tsc -w",
+    "cdk": "cdk",
+    "synth": "cdk synth",
+    "deploy": "cdk deploy --all",
+    "destroy": "cdk destroy --all"
+  },
+  "dependencies": {
+    "aws-cdk-lib": "^2.257.0",
+    "constructs": "^10.6.0",
+    "dotenv": "^17.4.2",
+    "react": "^19.1.1",
+    "react-dom": "^19.1.1"
+  },
+  "devDependencies": {
+    "@types/jest": "^30.0.0",
+    "@types/node": "^22.15.29",
+    "@vitejs/plugin-react": "^5.0.2",
+    "aws-cdk": "^2.1124.1",
+    "jest": "^30.4.2",
+    "ts-jest": "^29.4.11",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.8.3",
+    "vite": "^7.1.5"
+  },
+  "jest": {
+    "preset": "ts-jest",
+    "testEnvironment": "node",
+    "testMatch": [
+      "**/test/**/*.test.ts"
+    ]
+  }
+}

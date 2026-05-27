@@ -1,0 +1,117 @@
+name: Deploy static site
+
+on:
+  push:
+    branches:
+      - main
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  deploy:
+    name: Deploy infrastructure and website
+    runs-on: ubuntu-latest
+
+    env:
+      AWS_ACCOUNT_ID: ${{ vars.AWS_ACCOUNT_ID }}
+      AWS_REGION: ${{ vars.AWS_REGION }}
+      AWS_ROLE_ARN: ${{ vars.AWS_ROLE_ARN }}
+      DOMAIN_NAME: ${{ vars.DOMAIN_NAME }}
+      WWW_DOMAIN_NAME: ${{ vars.WWW_DOMAIN_NAME }}
+      PROJECT_NAME: ${{ vars.PROJECT_NAME }}
+      CERTIFICATE_REGION: ${{ vars.CERTIFICATE_REGION }}
+      ENABLE_SPA_FALLBACK: ${{ vars.ENABLE_SPA_FALLBACK }}
+      CREATE_GITHUB_OIDC_ROLE: ${{ vars.CREATE_GITHUB_OIDC_ROLE }}
+      GITHUB_OWNER: ${{ vars.GITHUB_OWNER }}
+      GITHUB_REPO: ${{ vars.GITHUB_REPO }}
+      GITHUB_BRANCH: ${{ vars.GITHUB_BRANCH }}
+      GITHUB_OIDC_PROVIDER_ARN: ${{ vars.GITHUB_OIDC_PROVIDER_ARN }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Validate configuration
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          : "${AWS_ACCOUNT_ID:?Set the AWS_ACCOUNT_ID GitHub Actions variable.}"
+          : "${AWS_REGION:?Set the AWS_REGION GitHub Actions variable.}"
+          : "${AWS_ROLE_ARN:?Set the AWS_ROLE_ARN GitHub Actions variable.}"
+          : "${DOMAIN_NAME:?Set the DOMAIN_NAME GitHub Actions variable.}"
+
+          echo "PROJECT_NAME=${PROJECT_NAME:-aws-cdk-static-site-starter}" >> "$GITHUB_ENV"
+          echo "WWW_DOMAIN_NAME=${WWW_DOMAIN_NAME:-www.${DOMAIN_NAME}}" >> "$GITHUB_ENV"
+          echo "CERTIFICATE_REGION=${CERTIFICATE_REGION:-us-east-1}" >> "$GITHUB_ENV"
+          echo "ENABLE_SPA_FALLBACK=${ENABLE_SPA_FALLBACK:-true}" >> "$GITHUB_ENV"
+          echo "CREATE_GITHUB_OIDC_ROLE=${CREATE_GITHUB_OIDC_ROLE:-false}" >> "$GITHUB_ENV"
+          echo "GITHUB_OWNER=${GITHUB_OWNER:-my-github-user}" >> "$GITHUB_ENV"
+          echo "GITHUB_REPO=${GITHUB_REPO:-aws-cdk-static-site-starter}" >> "$GITHUB_ENV"
+          echo "GITHUB_BRANCH=${GITHUB_BRANCH:-main}" >> "$GITHUB_ENV"
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ env.AWS_ROLE_ARN }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build CDK project
+        run: npm run build
+
+      - name: Build website
+        run: npm run build:site
+
+      - name: Run CDK unit tests
+        run: npm test -- --runInBand
+
+      - name: Deploy AWS infrastructure
+        run: |
+          npx cdk deploy --all \
+            --require-approval never \
+            --outputs-file cdk-outputs.json
+
+      - name: Read deployment outputs
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          STACK_NAME="${PROJECT_NAME}-static-site"
+          BUCKET_NAME="$(jq -r --arg stack "$STACK_NAME" '.[$stack].WebsiteBucketName' cdk-outputs.json)"
+          DISTRIBUTION_ID="$(jq -r --arg stack "$STACK_NAME" '.[$stack].CloudFrontDistributionId' cdk-outputs.json)"
+
+          if [[ -z "$BUCKET_NAME" || "$BUCKET_NAME" == "null" ]]; then
+            echo "Could not read WebsiteBucketName from cdk-outputs.json" >&2
+            exit 1
+          fi
+
+          if [[ -z "$DISTRIBUTION_ID" || "$DISTRIBUTION_ID" == "null" ]]; then
+            echo "Could not read CloudFrontDistributionId from cdk-outputs.json" >&2
+            exit 1
+          fi
+
+          echo "S3_BUCKET_NAME=$BUCKET_NAME" >> "$GITHUB_ENV"
+          echo "CLOUDFRONT_DISTRIBUTION_ID=$DISTRIBUTION_ID" >> "$GITHUB_ENV"
+
+      - name: Upload website to S3
+        run: |
+          aws s3 sync website_dist/ "s3://${S3_BUCKET_NAME}" \
+            --delete \
+            --cache-control "public,max-age=300"
+
+      - name: Invalidate CloudFront cache
+        run: |
+          aws cloudfront create-invalidation \
+            --distribution-id "$CLOUDFRONT_DISTRIBUTION_ID" \
+            --paths "/*"

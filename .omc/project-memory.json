@@ -1,0 +1,109 @@
+{
+  "version": "1.0.0",
+  "lastScanned": 1779892476168,
+  "projectRoot": "/Users/markgerald/Projects/mgm-tech/aws-ckd-site-opensource",
+  "techStack": {
+    "languages": [
+      {
+        "name": "JavaScript/TypeScript",
+        "version": null,
+        "confidence": "high",
+        "markers": [
+          "package.json"
+        ]
+      },
+      {
+        "name": "TypeScript",
+        "version": null,
+        "confidence": "high",
+        "markers": [
+          "tsconfig.json"
+        ]
+      }
+    ],
+    "frameworks": [
+      {
+        "name": "jest",
+        "version": "30.4.2",
+        "category": "testing"
+      }
+    ],
+    "packageManager": "npm",
+    "runtime": null
+  },
+  "build": {
+    "buildCommand": "npm run build",
+    "testCommand": "npm test",
+    "lintCommand": null,
+    "devCommand": null,
+    "scripts": {
+      "build": "tsc",
+      "test": "jest",
+      "test:coverage": "jest --coverage",
+      "watch": "tsc -w",
+      "cdk": "cdk",
+      "synth": "cdk synth",
+      "deploy": "cdk deploy --all",
+      "destroy": "cdk destroy --all"
+    }
+  },
+  "conventions": {
+    "namingStyle": "camelCase/PascalCase",
+    "importStyle": "ES modules",
+    "testPattern": "*.test.ts",
+    "fileOrganization": null
+  },
+  "structure": {
+    "isMonorepo": false,
+    "workspaces": [],
+    "mainDirectories": [
+      "bin",
+      "lib",
+      "test"
+    ],
+    "gitBranches": null
+  },
+  "customNotes": [],
+  "directoryMap": {
+    "bin": {
+      "path": "bin",
+      "purpose": "Executable scripts",
+      "fileCount": 1,
+      "lastAccessed": 1779892476120,
+      "keyFiles": [
+        "app.ts"
+      ]
+    },
+    "lib": {
+      "path": "lib",
+      "purpose": "Library code",
+      "fileCount": 1,
+      "lastAccessed": 1779892476121,
+      "keyFiles": [
+        "static-site-stack.ts"
+      ]
+    },
+    "test": {
+      "path": "test",
+      "purpose": "Test files",
+      "fileCount": 1,
+      "lastAccessed": 1779892476123,
+      "keyFiles": [
+        "static-site-stack.test.ts"
+      ]
+    },
+    "website": {
+      "path": "website",
+      "purpose": null,
+      "fileCount": 3,
+      "lastAccessed": 1779892476145,
+      "keyFiles": [
+        "app.js",
+        "index.html",
+        "styles.css"
+      ]
+    }
+  },
+  "hotPaths": [],
+  "userDirectives": []
+}
