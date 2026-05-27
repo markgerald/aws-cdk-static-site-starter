@@ -14,23 +14,7 @@ Reusable AWS CDK starter for a static website with private S3, CloudFront OAC, A
 
 ## Architecture
 
-```text
-User
-  -> Cloudflare DNS, preferably DNS only at first
-  -> CloudFront distribution with HTTPS and HTTP -> HTTPS redirect
-  -> Origin Access Control with SigV4 signing
-  -> Private S3 bucket with Block Public Access
-
-GitHub Actions
-  -> OIDC to an AWS IAM role
-  -> npm run build:site
-  -> cdk deploy
-  -> aws s3 sync website_dist/
-  -> cloudfront create-invalidation
-
-ACM us-east-1
-  <- DNS validation CNAMEs created manually in Cloudflare
-```
+![Architecture](docs/complete-architecture.png)
 
 This project intentionally avoids Route 53, WAF, Lambda@Edge, CloudFront Functions, and CloudFront logs. Those can be useful in larger environments, but they are not required for a small React site served as static files.
 

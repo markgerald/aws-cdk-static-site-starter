@@ -15,23 +15,7 @@ Starter reutilizável de AWS CDK para site estático com S3 privado, CloudFront 
 
 ## Arquitetura
 
-```text
-Usuário
-  -> Cloudflare DNS, preferencialmente DNS only no início
-  -> CloudFront Distribution com HTTPS e redirect HTTP -> HTTPS
-  -> Origin Access Control com assinatura SigV4
-  -> Bucket S3 privado com Block Public Access
-
-GitHub Actions
-  -> OIDC para IAM Role na AWS
-  -> npm run build:site
-  -> cdk deploy
-  -> aws s3 sync website_dist/
-  -> cloudfront create-invalidation
-
-ACM us-east-1
-  <- CNAMEs de validação criados manualmente na Cloudflare
-```
+![Arquitetura](complete-architecture.png)
 
 O projeto não usa Route 53, WAF, Lambda@Edge, CloudFront Functions nem logs do CloudFront. Esses recursos podem ser úteis em ambientes maiores, mas não são necessários para um site React pequeno servido como arquivos estáticos.
 
