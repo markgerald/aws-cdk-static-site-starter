@@ -17,7 +17,7 @@
     "destroy": "cdk destroy --all"
   },
   "dependencies": {
-    "aws-cdk-lib": "^2.257.0",
+    "aws-cdk-lib": "^2.260.0",
     "constructs": "^10.6.0",
     "dotenv": "^17.4.2",
     "react": "^19.1.1",
